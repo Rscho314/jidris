@@ -4,7 +4,7 @@ module IONDSafeArray
 
 data ArrayData : Type -> Type where
 export
-data SDArray l el = MkSDArray Int (ArrayData el)
+data SDArray l e = MkSDArray Int (ArrayData e)
 
 export
 data NDArray : (shape : List Int) -> Type -> Type where
@@ -19,3 +19,16 @@ newArray size default
                              (Ptr -> Int -> Raw e -> IO (Raw (ArrayData e)))
                              vm size (MkRaw default)
               pure (MkSDArray size p)
+
+safeWriteSDArray : SDArray l e -> Int -> e -> IO ()
+safeWriteSDArray (MkSDArray size p) i val
+                 = foreign FFI_C "idris_arraySet"
+                   (Raw (ArrayData e) -> Int -> Raw e -> IO ())
+                   (MkRaw p) i (MkRaw val)
+
+safeReadSDArray : SDArray l e -> Int -> IO e
+safeReadSDArray (MkSDArray size p) i
+                = do MkRaw val <- foreign FFI_C "idris_arrayGet"
+                                          (Raw (ArrayData e) -> Int -> IO (Raw e))
+                                          (MkRaw p) i
+                     pure val
