@@ -1,9 +1,13 @@
 module Main
 
+--import IOSafeArray
 import IOSafeArray
+import Data.Vect
 
-main : IO (SDArray Int String)
-main = newArray 5 "a"
+main : IO ()
+main = do a <- newArray 5 "a"
+          b <- readSDArray 1 a
+          print b
 
 -- Local Variables:
 -- idris-load-packages: ("contrib")
