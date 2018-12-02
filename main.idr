@@ -5,9 +5,8 @@ import IOSafeArray
 import Data.Vect
 
 main : IO ()
-main = do a <- newArray 5 "a"
-          b <- readSDArray 1 a
-          print b
+main = do a <- (the NatStar 5)
+          print a
 
 -- Local Variables:
 -- idris-load-packages: ("contrib")
